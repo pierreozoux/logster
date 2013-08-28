@@ -21,7 +21,7 @@ class SpecjourLogster(LogsterParser):
         
         # Regular expression for matching lines we are interested in, and capturing
         # fields from the line
-        self.reg = re.compile('.* Finished (?P<test_path>\./.*) in (?P<run_time>.*)s')
+        self.reg = re.compile('.* (?P<computer_name>.*) specjour.log.*Finished (?P<test_path>[\./spec|features].*) in (?P<run_time>.*)s')
 
 
     def parse_line(self, line):
@@ -33,8 +33,11 @@ class SpecjourLogster(LogsterParser):
             regMatch = self.reg.match(line)
 
             if regMatch:
+                print "regMatch"
                 linebits = regMatch.groupdict()
+                print linebits
                 test_path = linebits['test_path'].replace(".","").replace("/spec","spec").replace("/",".").replace(":",".")
+                print test_path
                 run_time = float(linebits['run_time'])
                 graphite_path = "specjour." + linebits['computer_name'] + "." + test_path
                 self.tests.append(MetricObject(graphite_path, run_time))
