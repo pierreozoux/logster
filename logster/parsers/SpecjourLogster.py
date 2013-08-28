@@ -33,17 +33,13 @@ class SpecjourLogster(LogsterParser):
             regMatch = self.reg.match(line)
 
             if regMatch:
-                print "regMatch"
                 linebits = regMatch.groupdict()
-                print linebits
                 test_path = linebits['test_path'].replace(".","").replace("/spec","spec").replace("/",".").replace(":",".")
-                print test_path
                 run_time = float(linebits['run_time'])
                 graphite_path = "specjour." + linebits['computer_name'] + "." + test_path
                 self.tests.append(MetricObject(graphite_path, run_time))
 
             else:
-                print "Reg not match...."
                 raise LogsterParsingException, "regmatch failed to match"
 
         except Exception, e:
